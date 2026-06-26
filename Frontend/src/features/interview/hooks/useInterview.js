@@ -16,19 +16,29 @@ export const useInterview = () => {
     const { loading, setLoading, report, setReport, reports, setReports } = context
 
     const generateReport = async ({ jobDescription, selfDescription, resumeFile }) => {
-        setLoading(true)
-        let response = null
-        try {
-            response = await generateInterviewReport({ jobDescription, selfDescription, resumeFile })
-            setReport(response.interviewReport)
-        } catch (error) {
-            console.log(error)
-        } finally {
-            setLoading(false)
-        }
+        setLoading(true);
 
-        return response.interviewReport
-    }
+        try {
+            const response = await generateInterviewReport({
+                jobDescription,
+                selfDescription,
+                resumeFile,
+            });
+
+            console.log("API Response:", response);
+
+            setReport(response.interviewReport);
+
+            return response.interviewReport;
+        } catch (error) {
+            console.error("Error:", error);
+            console.error("Response:", error.response);
+            console.error("Data:", error.response?.data);
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const getReportById = async (interviewId) => {
         setLoading(true)

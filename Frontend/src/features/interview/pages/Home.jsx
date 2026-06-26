@@ -13,10 +13,31 @@ const Home = () => {
     const navigate = useNavigate()
 
     const handleGenerateReport = async () => {
-        const resumeFile = resumeInputRef.current.files[ 0 ]
-        const data = await generateReport({ jobDescription, selfDescription, resumeFile })
-        navigate(`/interview/${data._id}`)
+    try {
+        const resumeFile = resumeInputRef.current?.files?.[0];
+
+        console.log("Resume:", resumeFile);
+        console.log("Job Description:", jobDescription);
+        console.log("Self Description:", selfDescription);
+
+        const data = await generateReport({
+            jobDescription,
+            selfDescription,
+            resumeFile,
+        });
+
+        console.log("Returned:", data);
+
+        if (!data) {
+            console.log("No data returned.");
+            return;
+        }
+
+        navigate(`/interview/${data._id}`);
+    } catch (error) {
+        console.error("Error generating report:", error);
     }
+};
 
     if (loading) {
         return (
@@ -81,7 +102,17 @@ const Home = () => {
                                 </span>
                                 <p className='dropzone__title'>Click to upload or drag &amp; drop</p>
                                 <p className='dropzone__subtitle'>PDF or DOCX (Max 5MB)</p>
-                                <input ref={resumeInputRef} hidden type='file' id='resume' name='resume' accept='.pdf,.docx' />
+                                <input
+                                    ref={resumeInputRef}
+                                    hidden
+                                    type="file"
+                                    id="resume"
+                                    name="resume"
+                                    accept=".pdf,.docx"
+                                    onChange={(e) => {
+                                        console.log("Selected:", e.target.files[0]);
+                                    }}
+                                />
                             </label>
                         </div>
 
